@@ -2,14 +2,16 @@ import React,{useRef, useEffect} from 'react'
 import { Map_class } from '../../class/map.class';
 import DrawBG from '../../utils/DrawBG';
 import { Tank_class } from '../../class/tank.class';
+import { handleCrossKeyboard } from '../../utils/EventKeyboard';
+import imageTank from '../../assets/tank.png'
 
 const Canvas:React.FC = () => {
     const width_canvas = 600
     const height_canvas = 600
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const newMap = new Map_class( width_canvas, height_canvas)
-    const tank = new Tank_class(width_canvas/2, height_canvas/2, 10, 10)
-
+    const tank = new Tank_class(width_canvas/2, height_canvas/2, 30, 30,imageTank)
+    const keys = handleCrossKeyboard()
     
     useEffect(() => {
         const canvas = canvasRef.current
@@ -19,9 +21,9 @@ const Canvas:React.FC = () => {
                 
                 const intervalID = setInterval(()=>{
                     DrawBG(ctx, newMap)
-                    
-                    tank.draw(ctx)
-                }, 10)
+                    tank.move(keys, width_canvas, height_canvas)
+                    tank.draw(ctx, keys)
+                }, 30)
                 return () => {
                 clearInterval(intervalID)
               }
