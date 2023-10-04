@@ -9,7 +9,7 @@ const Canvas:React.FC = () => {
     const width_canvas = 600
     const height_canvas = 600
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const newMap = new Map_class( width_canvas, height_canvas)
+    const newMap = new Map_class( width_canvas, height_canvas, 4, 4)
     const tank = new Tank_class(width_canvas/2, height_canvas/2, 30, 30,imageTank)
     const keys = handleCrossKeyboard()
     
@@ -20,8 +20,8 @@ const Canvas:React.FC = () => {
             if (ctx) {
                 
                 const intervalID = setInterval(()=>{
-                    DrawBG(ctx, newMap)
-                    tank.move(keys, width_canvas, height_canvas)
+                    newMap.draw(ctx)
+                    tank.move(keys, width_canvas, height_canvas)         
                     tank.draw(ctx)
                 }, 30)
                 return () => {

@@ -11,9 +11,14 @@ export class Tank_class {
         x:number
         y:number
     }
-    acceleration:number = 0.5
+    vector_direction:{
+        x:number
+        y:number
+    }
+    module_vector:number = 0.5
+    acceleration:number = 0.5   
     rotation:number = 0
-    rotation_speed: number = Math.PI/4
+    speed_rotation:number = Math.PI/20
     friction:number = 0.9
     image: HTMLImageElement
     constructor (
@@ -25,10 +30,11 @@ export class Tank_class {
     ){
         this.possition = {x:initial_possition_x, y:initial_possition_y}
         this.dimension = { width, height}
-   
+        this.vector_direction = {x:this.module_vector*Math.sin(this.rotation), y:this.module_vector*Math.cos(this.rotation)}     
         this.velocity = {x:0, y:0}     
         this.image = new Image()
-        this.image.src = url_image        
+        this.image.src = url_image
+               
     }
     private colisionBorders (width_map:number,height_map:number) {
         if (this.possition.x < 0) {
@@ -48,57 +54,26 @@ export class Tank_class {
            this.velocity.y = 0
         }
     }
-    private rotate (KEYS: { [key: string]: boolean }) {
-        if ((KEYS['ArrowLeft'])) {
-                if (this.rotation > Math.PI) {
-                        this.rotation += this.rotation_speed
-                }
-                if (this.rotation > -Math.PI/2) {
-                        this.rotation -= this.rotation_speed
-                }
-                if (this.rotation < -Math.PI/2) {
-                        this.rotation += this.rotation_speed
-                }
-        }
-        if ((KEYS['ArrowRight'])) {
-                if (this.rotation < Math.PI/2) {
-                        this.rotation += this.rotation_speed
-                }
-                
-                if (this.rotation > Math.PI/2) {
-                        this.rotation -= this.rotation_speed
-                }
-        }
-        if ((KEYS['ArrowDown'])) {
-                if (this.rotation < Math.PI) {
-                        this.rotation += this.rotation_speed
-                }
-                if (this.rotation > Math.PI) {
-                        this.rotation -= this.rotation_speed
-                }
-        }
-        if ((KEYS['ArrowUp'])) {
-                if (this.rotation < 0) {
-                        this.rotation += this.rotation_speed
-                     }
-                if (this.rotation > 0) {
-                        this.rotation -= this.rotation_speed
-                }
-        }
+
+    public rotate(KEYS: { [key: string]: boolean }) {
+            if (KEYS['ArrowLeft']) {
+                this.rotation -= this.speed_rotation
+            } else if (KEYS['ArrowRight']){
+                this.rotation += this.speed_rotation
+            }
+            this.vector_direction = {x:this.module_vector*Math.sin(this.rotation), y:this.module_vector*Math.cos(this.rotation)} 
     }
     public move (KEYS: { [key: string]: boolean }, width_map:number, height_map:number) {
-        if (KEYS['ArrowLeft']) {
-            this.velocity.x -= this.acceleration     
-        } else if (KEYS['ArrowRight']){
-            this.velocity.x += this.acceleration      
-        }
         if (KEYS['ArrowUp']){
-            this.velocity.y -= this.acceleration 
+            this.velocity.y -= this.vector_direction.y 
+            this.velocity.x += this.vector_direction.x      
+
 
         } else if (KEYS['ArrowDown']) {
-            this.velocity.y += this.acceleration
-      
+            this.velocity.y += this.vector_direction.y
+            this.velocity.x -= this.vector_direction.x          
         }
+
         this.possition.y += this.velocity.y
         this.velocity.y *= this.friction
         this.possition.x += this.velocity.x
