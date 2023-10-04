@@ -20,7 +20,7 @@ export class Map_class {
             const array_j = []
             for (let j = 0; j < this.height; j += this.cell_dimension.height) {
               const currentCell = new Cell_class(i,j,this.cell_dimension.width,this.cell_dimension.height)
-              currentCell.isVoid(Math.round(Math.random())===0)
+              currentCell.isVoid(Math.random() > 0.92)
               array_j.push(currentCell)
             }
             matrixCell.push(array_j)
@@ -30,7 +30,7 @@ export class Map_class {
     public draw(ctx:CanvasRenderingContext2D){
             for (let i = 0; i < this.matrix.length; i++) {
               for (let j = 0; j < this.matrix[0].length; j++) {
-                ctx.fillStyle = this.matrix[i][j].void? '#4e3b31' : '#8b8c7a'
+                ctx.fillStyle = this.matrix[i][j].void? '#8b8c7a' :'#8d948d'
                 ctx.fillRect( 
                   this.matrix[i][j].possition.x,
                   this.matrix[i][j].possition.y,

@@ -4,6 +4,7 @@ interface stateKeysProperties {
     ArrowRight:boolean;
     ArrowUp:boolean;
     ArrowDown:boolean;
+    Space:boolean;
 }
 
 
@@ -12,6 +13,7 @@ const initialState = {
     ArrowRight: false,
     ArrowUp: false,
     ArrowDown: false,
+    Space:false
   };
   
 

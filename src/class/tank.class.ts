@@ -1,3 +1,5 @@
+import { Bullet_class } from "./bullet.class";
+
 export class Tank_class {
     possition:{
         x:number
@@ -21,12 +23,18 @@ export class Tank_class {
     speed_rotation:number = Math.PI/20
     friction:number = 0.9
     image: HTMLImageElement
+    width_map:number
+    height_map:number
+    bullets:Bullet_class[]
     constructor (
         initial_possition_x: number,
         initial_possition_y: number,
         width:number,
         height:number,
-        url_image:string
+        url_image:string,
+        width_map:number,
+        height_map:number
+        
     ){
         this.possition = {x:initial_possition_x, y:initial_possition_y}
         this.dimension = { width, height}
@@ -34,7 +42,10 @@ export class Tank_class {
         this.velocity = {x:0, y:0}     
         this.image = new Image()
         this.image.src = url_image
-               
+        this.width_map = width_map
+        this.height_map = height_map
+        this.bullets = []
+         
     }
     private colisionBorders (width_map:number,height_map:number) {
         if (this.possition.x < 0) {
@@ -80,6 +91,18 @@ export class Tank_class {
         this.velocity.x *= this.friction
         this.rotate(KEYS)
         this.colisionBorders(width_map,height_map)
+        
+    }
+    private shot( KEYS:{ [key: string]: boolean }){      
+        
+        const canon_possition_x = this.possition.x + this.dimension.width/2
+        const canon_possition_y = this.possition.y   
+        if(KEYS[' ']){
+                const newShot = new Bullet_class(canon_possition_x,canon_possition_y, this.rotation, this.width_map, this.height_map )
+                this.bullets.push(newShot)             
+
+        }        
+        
     }
     public draw (ctx:CanvasRenderingContext2D){
         if (this.image) {
@@ -92,7 +115,14 @@ export class Tank_class {
         }
         
     }
-    public update () {
-
+    public update (KEYS: { [key: string]: boolean }, width_map:number, height_map:number,ctx:CanvasRenderingContext2D) {
+        this.move(KEYS, width_map, height_map)
+        this.shot(KEYS)
+        for (let i = 0; i < this.bullets.length; i++) {                
+                const bullet = this.bullets[i];
+                bullet.move();
+                bullet.draw(ctx);
+            }
+        this.draw(ctx)
     }
 }

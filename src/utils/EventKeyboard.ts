@@ -3,6 +3,7 @@ const KEYS: { [key: string]: boolean } = {
     ArrowRight: false,
     ArrowUp: false,
     ArrowDown: false,
+    " ": false
 }
 
 export const handleCrossKeyboard = () => {
