@@ -22,7 +22,7 @@ const Canvas:React.FC = () => {
                 const intervalID = setInterval(()=>{
                     DrawBG(ctx, newMap)
                     tank.move(keys, width_canvas, height_canvas)
-                    tank.draw(ctx, keys)
+                    tank.draw(ctx)
                 }, 30)
                 return () => {
                 clearInterval(intervalID)

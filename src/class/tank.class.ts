@@ -11,6 +11,9 @@ export class Tank_class {
         x:number
         y:number
     }
+    acceleration:number = 0.5
+    rotation:number = 0
+    rotation_speed: number = Math.PI/4
     friction:number = 0.9
     image: HTMLImageElement
     constructor (
@@ -22,6 +25,7 @@ export class Tank_class {
     ){
         this.possition = {x:initial_possition_x, y:initial_possition_y}
         this.dimension = { width, height}
+   
         this.velocity = {x:0, y:0}     
         this.image = new Image()
         this.image.src = url_image        
@@ -44,41 +48,70 @@ export class Tank_class {
            this.velocity.y = 0
         }
     }
+    private rotate (KEYS: { [key: string]: boolean }) {
+        if ((KEYS['ArrowLeft'])) {
+                if (this.rotation > Math.PI) {
+                        this.rotation += this.rotation_speed
+                }
+                if (this.rotation > -Math.PI/2) {
+                        this.rotation -= this.rotation_speed
+                }
+                if (this.rotation < -Math.PI/2) {
+                        this.rotation += this.rotation_speed
+                }
+        }
+        if ((KEYS['ArrowRight'])) {
+                if (this.rotation < Math.PI/2) {
+                        this.rotation += this.rotation_speed
+                }
+                
+                if (this.rotation > Math.PI/2) {
+                        this.rotation -= this.rotation_speed
+                }
+        }
+        if ((KEYS['ArrowDown'])) {
+                if (this.rotation < Math.PI) {
+                        this.rotation += this.rotation_speed
+                }
+                if (this.rotation > Math.PI) {
+                        this.rotation -= this.rotation_speed
+                }
+        }
+        if ((KEYS['ArrowUp'])) {
+                if (this.rotation < 0) {
+                        this.rotation += this.rotation_speed
+                     }
+                if (this.rotation > 0) {
+                        this.rotation -= this.rotation_speed
+                }
+        }
+    }
     public move (KEYS: { [key: string]: boolean }, width_map:number, height_map:number) {
         if (KEYS['ArrowLeft']) {
-            this.velocity.x--
+            this.velocity.x -= this.acceleration     
         } else if (KEYS['ArrowRight']){
-            this.velocity.x++
+            this.velocity.x += this.acceleration      
         }
         if (KEYS['ArrowUp']){
-            this.velocity.y--
+            this.velocity.y -= this.acceleration 
+
         } else if (KEYS['ArrowDown']) {
-            this.velocity.y++
+            this.velocity.y += this.acceleration
+      
         }
         this.possition.y += this.velocity.y
         this.velocity.y *= this.friction
         this.possition.x += this.velocity.x
         this.velocity.x *= this.friction
+        this.rotate(KEYS)
         this.colisionBorders(width_map,height_map)
     }
-    public draw (ctx:CanvasRenderingContext2D, KEYS: { [key: string]: boolean }){
+    public draw (ctx:CanvasRenderingContext2D){
         if (this.image) {
            ctx.save()
-           if (KEYS['ArrowLeft']) {
-                ctx.translate(this.possition.x + this.dimension.width/2, this.possition.y + this.dimension.height/2)
-                ctx.rotate(-Math.PI/2)
-                ctx.translate(-this.possition.x - this.dimension.width/2, -this.possition.y - this.dimension.height/2)
-           }
-           if (KEYS['ArrowRight']) {
-                ctx.translate(this.possition.x + this.dimension.width/2, this.possition.y + this.dimension.height/2)
-                ctx.rotate(Math.PI/2)
-                ctx.translate(-this.possition.x - this.dimension.width/2, -this.possition.y - this.dimension.height/2)
-           }
-           if (KEYS['ArrowDown']) {
-                ctx.translate(this.possition.x + this.dimension.width/2, this.possition.y + this.dimension.height/2)
-                ctx.rotate(Math.PI)
-                ctx.translate(-this.possition.x - this.dimension.width/2, -this.possition.y - this.dimension.height/2)
-           }
+           ctx.translate(this.possition.x + this.dimension.width/2, this.possition.y + this.dimension.height/2)
+           ctx.rotate(this.rotation)
+           ctx.translate(-this.possition.x - this.dimension.width/2, -this.possition.y - this.dimension.height/2)
            ctx.drawImage(this.image, this.possition.x, this.possition.y, this.dimension.width, this.dimension.height)
            ctx.restore()
         }
