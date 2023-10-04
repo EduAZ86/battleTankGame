@@ -3,7 +3,7 @@ import { Cell_class } from "./cell.class";
 export class Map_class {
     width:number;
     height:number;
-    matrix:Cell_class[][];
+    matrix:Cell_class[][]
     
     constructor(width:number, height:number){
         this.width = width;
