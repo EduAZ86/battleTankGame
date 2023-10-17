@@ -5,8 +5,8 @@ import { handleCrossKeyboard } from '../../utils/EventKeyboard';
 import imageTank from '../../assets/tank.png'
 
 const Canvas:React.FC = () => {
-    const width_canvas = 600
-    const height_canvas = 600
+    const width_canvas = 800
+    const height_canvas = 800
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const newMap = new Map_class( width_canvas, height_canvas, 4, 4)
     const tank = new Tank_class(width_canvas/2, height_canvas/2, 30, 30,imageTank,width_canvas,height_canvas)

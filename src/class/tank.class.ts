@@ -1,4 +1,5 @@
 import { Bullet_class } from "./bullet.class";
+import { smoke_particle } from "./smokeParticles.class";
 
 export class Tank_class {
     possition:{
@@ -26,6 +27,9 @@ export class Tank_class {
     width_map:number
     height_map:number
     bullets:Bullet_class[]
+    particles_smoke:smoke_particle[]
+    lastShotTime:number = 0
+    shootCooldown:number = 100
     constructor (
         initial_possition_x: number,
         initial_possition_y: number,
@@ -45,6 +49,7 @@ export class Tank_class {
         this.width_map = width_map
         this.height_map = height_map
         this.bullets = []
+        this.particles_smoke=[]
          
     }
     private colisionBorders (width_map:number,height_map:number) {
@@ -66,7 +71,7 @@ export class Tank_class {
         }
     }
 
-    public rotate(KEYS: { [key: string]: boolean }) {
+    private rotate(KEYS: { [key: string]: boolean }) {
             if (KEYS['ArrowLeft']) {
                 this.rotation -= this.speed_rotation
             } else if (KEYS['ArrowRight']){
@@ -74,11 +79,15 @@ export class Tank_class {
             }
             this.vector_direction = {x:this.module_vector*Math.sin(this.rotation), y:this.module_vector*Math.cos(this.rotation)} 
     }
-    public move (KEYS: { [key: string]: boolean }, width_map:number, height_map:number) {
+    private move (KEYS: { [key: string]: boolean }, width_map:number, height_map:number) {
         if (KEYS['ArrowUp']){
             this.velocity.y -= this.vector_direction.y 
             this.velocity.x += this.vector_direction.x      
 
+            const smoke_L = new smoke_particle(this.possition.x+this.dimension.width, this.possition.y+this.dimension.height/2, '#5F264A','circle')
+            const smoke_R = new smoke_particle(this.possition.x, this.possition.y+this.dimension.height/2, '#5F264A','circle')
+            this.particles_smoke.push(smoke_R)      
+            this.particles_smoke.push(smoke_L)
 
         } else if (KEYS['ArrowDown']) {
             this.velocity.y += this.vector_direction.y
@@ -91,20 +100,18 @@ export class Tank_class {
         this.velocity.x *= this.friction
         this.rotate(KEYS)
         this.colisionBorders(width_map,height_map)
-        
     }
     private shot( KEYS:{ [key: string]: boolean }){      
-        
+        const currentTime = Date.now()
         const canon_possition_x = this.possition.x + this.dimension.width/2
-        const canon_possition_y = this.possition.y   
-        if(KEYS[' ']){
+        const canon_possition_y = this.possition.y + this.dimension.height/2
+        if(KEYS[' '] && ((currentTime + this.lastShotTime) >= this.shootCooldown)){                
                 const newShot = new Bullet_class(canon_possition_x,canon_possition_y, this.rotation, this.width_map, this.height_map )
-                this.bullets.push(newShot)             
-
+                this.bullets.push(newShot)
         }        
-        
+        this.lastShotTime = currentTime
     }
-    public draw (ctx:CanvasRenderingContext2D){
+    private draw (ctx:CanvasRenderingContext2D){
         if (this.image) {
            ctx.save()
            ctx.translate(this.possition.x + this.dimension.width/2, this.possition.y + this.dimension.height/2)
@@ -123,6 +130,10 @@ export class Tank_class {
                 bullet.move();
                 bullet.draw(ctx);
             }
+        for (let j = 0; j < this.particles_smoke.length; j++) {
+                const particle = this.particles_smoke[j]
+                particle.draw(ctx)
+        }
         this.draw(ctx)
     }
 }

@@ -4,7 +4,7 @@ export class Bullet_class {
         x:number
         y:number
     }
-    velocity_module:number = 10
+    velocity_module:number = 15
     vector_velocity:{
         x:number
         y:number
