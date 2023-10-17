@@ -4,22 +4,22 @@ export class Map_class {
     width:number;
     height:number;
     matrix:Cell_class[][]
-    cell_dimension:{
-        width:number
-        height:number
-    }
+    cell_size:{
+      width:number;
+      height:number;
+  };
     constructor(width:number, height:number, width_cell:number, height_cell:number){
         this.width = width;
         this.height = height;
-        this.cell_dimension = {width:width_cell, height:height_cell}
+        this.cell_size = {width:width_cell, height:height_cell}
         this.matrix = this.matrixGenerator()
     }
     private matrixGenerator(){
         const matrixCell = []
-        for (let i = 0; i < this.width; i += this.cell_dimension.width) {
+        for (let i = 0; i < this.width; i += this.cell_size.width) {
             const array_j = []
-            for (let j = 0; j < this.height; j += this.cell_dimension.height) {
-              const currentCell = new Cell_class(i,j,this.cell_dimension.width,this.cell_dimension.height)
+            for (let j = 0; j < this.height; j += this.cell_size.height) {
+              const currentCell = new Cell_class(i,j,this.cell_size.width,this.cell_size.height)
               currentCell.isVoid(Math.random() > 0.92)
               array_j.push(currentCell)
             }
