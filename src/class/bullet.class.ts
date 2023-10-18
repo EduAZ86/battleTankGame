@@ -1,37 +1,33 @@
-
+import { v4 as uuidv4 } from 'uuid';
 export class Bullet_class {
+    ID:string = uuidv4()
+    shotting_date:number;
     possition:{
-        x:number
-        y:number
-    }
-    velocity_module:number = 15
+        x:number;
+        y:number;
+    };
+    size:{
+        width:number;
+        height:number;
+    };
+    velocity_module:number = 15;
     vector_velocity:{
-        x:number
-        y:number
-    }
-    width_map:number
-    height_map:number
+        x:number;
+        y:number;
+    };
 
-    constructor(possition_x:number, possition_y:number, angle_rad:number, width_map:number, height_map:number){
+    constructor(possition_x:number, possition_y:number, angle_rad:number){
         this.vector_velocity = {x: this.velocity_module * Math.sin(-angle_rad), y: this.velocity_module * Math.cos(angle_rad)}
-        this.possition = {x:possition_x, y:possition_y}
-        this.width_map = width_map
-        this.height_map = height_map    
+        this.possition = {x:possition_x, y:possition_y};
+        this.shotting_date = Date.now();
+        this.size = {width:2, height:2}  
     }
     public move(){
         this.possition.x -= this.vector_velocity.x;
-        this.possition.y -= this.vector_velocity.y;
-        if (
-            this.possition.x < 0 ||
-            this.possition.x > this.width_map ||
-            this.possition.y < 0 ||
-            this.possition.y > this.height_map
-        ){
-            return
-        } 
+        this.possition.y -= this.vector_velocity.y; 
     }
     public draw(ctx: CanvasRenderingContext2D){
-        ctx.fillStyle = 'red'
-        ctx.fillRect(this.possition.x, this.possition.y, 2, 2)
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.possition.x, this.possition.y, this.size.width, this.size.height);
     }
 }

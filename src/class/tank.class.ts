@@ -2,7 +2,7 @@ import { Bullet_class } from "./bullet.class";
 import { smoke_particle } from "./smokeParticles.class";
 
 export class Tank_class {
-    possition:{
+    position:{
         x:number
         y:number
     }
@@ -40,7 +40,7 @@ export class Tank_class {
         height_map:number
         
     ){
-        this.possition = {x:initial_possition_x, y:initial_possition_y}
+        this.position = {x:initial_possition_x, y:initial_possition_y}
         this.dimension = { width, height}
         this.vector_direction = {x:this.module_vector*Math.sin(this.rotation), y:this.module_vector*Math.cos(this.rotation)}     
         this.velocity = {x:0, y:0}     
@@ -53,20 +53,20 @@ export class Tank_class {
          
     }
     private colisionBorders (width_map:number,height_map:number) {
-        if (this.possition.x < 0) {
-           this.possition.x = 0
+        if (this.position.x < 0) {
+           this.position.x = 0
            this.velocity.x = 0     
         }
-        if (this.possition.x > (width_map - this.dimension.width) ) {
-           this.possition.x = (width_map - this.dimension.width)
+        if (this.position.x > (width_map - this.dimension.width) ) {
+           this.position.x = (width_map - this.dimension.width)
            this.velocity.x = 0
         }
-        if (this.possition.y < 0) {
-           this.possition.y = 0
+        if (this.position.y < 0) {
+           this.position.y = 0
            this.velocity.y = 0     
         }
-        if (this.possition.y > (height_map - this.dimension.height)) {
-           this.possition.y = (height_map - this.dimension.height)
+        if (this.position.y > (height_map - this.dimension.height)) {
+           this.position.y = (height_map - this.dimension.height)
            this.velocity.y = 0
         }
     }
@@ -84,8 +84,8 @@ export class Tank_class {
             this.velocity.y -= this.vector_direction.y 
             this.velocity.x += this.vector_direction.x      
 
-            const smoke_L = new smoke_particle(this.possition.x+this.dimension.width, this.possition.y+this.dimension.height/2, '#5F264A','circle')
-            const smoke_R = new smoke_particle(this.possition.x, this.possition.y+this.dimension.height/2, '#5F264A','circle')
+            const smoke_L = new smoke_particle(this.position.x+this.dimension.width, this.position.y+this.dimension.height/2, '#5F264A','circle')
+            const smoke_R = new smoke_particle(this.position.x, this.position.y+this.dimension.height/2, '#5F264A','circle')
             this.particles_smoke.push(smoke_R)      
             this.particles_smoke.push(smoke_L)
 
@@ -94,17 +94,17 @@ export class Tank_class {
             this.velocity.x -= this.vector_direction.x          
         }
 
-        this.possition.y += this.velocity.y
+        this.position.y += this.velocity.y
         this.velocity.y *= this.friction
-        this.possition.x += this.velocity.x
+        this.position.x += this.velocity.x
         this.velocity.x *= this.friction
         this.rotate(KEYS)
         this.colisionBorders(width_map,height_map)
     }
     private shot( KEYS:{ [key: string]: boolean }){      
         const currentTime = Date.now()
-        const canon_possition_x = this.possition.x + this.dimension.width/2
-        const canon_possition_y = this.possition.y + this.dimension.height/2
+        const canon_possition_x = this.position.x + this.dimension.width/2
+        const canon_possition_y = this.position.y + this.dimension.height/2
         if(KEYS[' '] && ((currentTime + this.lastShotTime) >= this.shootCooldown)){                
                 const newShot = new Bullet_class(canon_possition_x,canon_possition_y, this.rotation, this.width_map, this.height_map )
                 this.bullets.push(newShot)
@@ -114,10 +114,10 @@ export class Tank_class {
     private draw (ctx:CanvasRenderingContext2D){
         if (this.image) {
            ctx.save()
-           ctx.translate(this.possition.x + this.dimension.width/2, this.possition.y + this.dimension.height/2)
+           ctx.translate(this.position.x + this.dimension.width/2, this.position.y + this.dimension.height/2)
            ctx.rotate(this.rotation)
-           ctx.translate(-this.possition.x - this.dimension.width/2, -this.possition.y - this.dimension.height/2)
-           ctx.drawImage(this.image, this.possition.x, this.possition.y, this.dimension.width, this.dimension.height)
+           ctx.translate(-this.position.x - this.dimension.width/2, -this.position.y - this.dimension.height/2)
+           ctx.drawImage(this.image, this.position.x, this.position.y, this.dimension.width, this.dimension.height)
            ctx.restore()
         }
         
